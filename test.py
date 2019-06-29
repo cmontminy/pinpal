@@ -30,11 +30,21 @@ async def migrate(ctx):
     migration = ctx.message.channel 
     pins = await migration.pins()
     if len(pins) != 0:
-        for x in pins:
-            
+        for x in reversed(pins):
             embed = discord.Embed(title = "")
             embed.set_author(name = x.author.display_name, icon_url = x.author.avatar_url)
-            
+
+            if x.content: #if a string is empty, it will return false in a boolean
+                #if len(x.content) > 256:
+                    
+                embed.add_field(name = x.content, value = x.created_at.strftime("%D @ %T %p") + " [jump](" + x.jump_url + ")")
+                if len(x.attachments) != 0:
+                    embed.set_footer(text = "{}".format(len(x.attachments)) + " attachment below")
+            else:
+                embed.add_field(name = "\u200b", value = x.created_at.strftime("%D @ %T %p") + " [jump](" + x.jump_url + ")")
+                embed.set_footer(text = "{}".format(len(x.attachments)) + " attachment below")
+            await bot.get_channel(defaultChannel).send(embed = embed)
+
             if len(x.attachments) != 0:
                 for y in x.attachments:
                     async with aiohttp.ClientSession() as session:
@@ -43,14 +53,9 @@ async def migrate(ctx):
                                 return await ctx.send('File not found, silly! >w<') #how do i make a sad owo face
                             data = io.BytesIO(await resp.read())
                             await bot.get_channel(defaultChannel).send(file=discord.File(data, y.filename))
-            print(x.content)
-            if x.content != embed.Empty:
-                embed.add_field(name = x.content, value = x.created_at.strftime("%D @ %T %p") + " [jump](" + x.jump_url + ")")
-            else:
-                embed.add_field(name = "", value = x.created_at.strftime("%D @ %T %p") + " [jump](" + x.jump_url + ")")
-            await bot.get_channel(defaultChannel).send(embed = embed)
-        
+
         await ctx.send("Messages have been migrated, silly! uwu")
+
     else: await ctx.send("There aren't any pins here, silly! òwó")
 
 #literally just to make sure it works
