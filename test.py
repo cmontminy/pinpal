@@ -5,10 +5,9 @@ import io
 import aiohttp
 #owo
 description = "a disc bot to handle pins a lil better"
-bot = commands.Bot(command_prefix='!', description=description)
+bot = commands.Bot(command_prefix='!', description=description, case_insensitive=True)
 
 defaultChannel = 0
-#defaultChannel = bot.get_channel(593894678688956531)
 
 @bot.event
 async def on_ready():
@@ -22,10 +21,11 @@ async def on_ready():
 async def setchannel(ctx):
     global defaultChannel
     defaultChannel = ctx.message.channel.id
-    await ctx.send("{} has been set as the default pin channel, silly! ow< ~☆".format(defaultChannel))
+    await ctx.send("#{} has been set as the default pin channel, silly! ow< ~☆".format(ctx.message.channel))
+# L M A O FUCK OFF WITH THAT LOWERCASE BITCH O H  M Y  G O D BWETTER TWANK U UWU
 
-#Pin mover
-@bot.command()
+#Pin mover owo
+@bot.command() #<3
 async def migrate(ctx):
     migration = ctx.message.channel 
     pins = await migration.pins()
@@ -35,14 +35,23 @@ async def migrate(ctx):
             embed.set_author(name = x.author.display_name, icon_url = x.author.avatar_url)
 
             if x.content: #if a string is empty, it will return false in a boolean
-                #if len(x.content) > 256:
-                    
-                embed.add_field(name = x.content, value = x.created_at.strftime("%D @ %T %p") + " [jump](" + x.jump_url + ")")
+                if len(x.content) > 256: 
+                    embed.add_field(name = x.clean_content[:253] + "...", value = x.created_at.strftime("%D @ %T %p") + " - this message was hecka long, silly! ☆W☆ [jump to see the rest](" + x.jump_url + ")")
+                else: 
+                    embed.add_field(name = x.clean_content, value = x.created_at.strftime("%D @ %T %p") + " - [jump](" + x.jump_url + ")")
+                
                 if len(x.attachments) != 0:
-                    embed.set_footer(text = "{}".format(len(x.attachments)) + " attachment below")
+                    #I I LOVE YOU I LO3333333333ASOIDJFKS3ADJFMSADJGMSDGOWO<3
+                    if len(x.attachments) == 1:
+                        embed.set_footer(text = "{}".format(len(x.attachments)) + " attachment below")
+                    else:
+                        embed.set_footer(text = "{}".format(len(x.attachments)) + " attachments below")
             else:
-                embed.add_field(name = "\u200b", value = x.created_at.strftime("%D @ %T %p") + " [jump](" + x.jump_url + ")")
-                embed.set_footer(text = "{}".format(len(x.attachments)) + " attachment below")
+                embed.add_field(name = "\u200b", value = x.created_at.strftime("%D @ %T %p") + " - [jump](" + x.jump_url + ")")
+                if len(x.attachments) == 1:
+                    embed.set_footer(text = "{}".format(len(x.attachments)) + " attachment below") # FIX THIS ONE TOO HEH
+                else:
+                    embed.set_footer(text = "{}".format(len(x.attachments)) + " attachments below")
             await bot.get_channel(defaultChannel).send(embed = embed)
 
             if len(x.attachments) != 0:
@@ -55,12 +64,13 @@ async def migrate(ctx):
                             await bot.get_channel(defaultChannel).send(file=discord.File(data, y.filename))
 
         await ctx.send("Messages have been migrated, silly! uwu")
-
     else: await ctx.send("There aren't any pins here, silly! òwó")
+
+
 
 #literally just to make sure it works
 @bot.command()
 async def test(ctx):
     await ctx.send("yo i work, silly! OwO")
 
-bot.run('TOKEN')
+bot.run('NTkyODQ3OTg5OTkxNTM4Njg4.XRaTeg.WzPqNRd_CP2etvU0GNQyX0KJ-yc')
