@@ -73,4 +73,4 @@ async def migrate(ctx):
 async def test(ctx):
     await ctx.send("yo i work, silly! OwO")
 
-bot.run('NTkyODQ3OTg5OTkxNTM4Njg4.XRaTeg.WzPqNRd_CP2etvU0GNQyX0KJ-yc')
+bot.run('TOKEN')
